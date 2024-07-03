@@ -5,20 +5,22 @@ import connect from '@/utils/db';
 import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
+    console.log('artur')
     try {
         const { name, email, password } = await req.json();
 
         await connect();
 
         const emailExists = await User.findOne({ email });
+        
 
         if (emailExists) {
             return NextResponse.json(
                 {
-                    message: 'E-mail já cadastrado!',
-                    status: 409,
-                },
-                { status: 409 }
+                    message: 'Erro: E-mail já Existe!',
+                    status: 409},
+            { status: 409 }
+                
             );
         }
 
@@ -26,10 +28,10 @@ export async function POST(req: NextRequest) {
 
         const newUser = new User({ name, email, password: hashedPassword });
         await newUser.save();
-
+        
         return NextResponse.json(
             {
-                message: 'Usuário criado com sucesso!',
+                message: 'Criado com Sucesso!',
                 status: 201,
             },
             { status: 201 }
@@ -39,7 +41,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(
             {
                 message: 'Erro ao criar usuário',
-                status: 500,
+                status: 500
             },
             { status: 500 }
         );
